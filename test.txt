@@ -1,5 +1,3 @@
-ABCDEFGHIJ
-nnnnnn
-lllll
-jjjjj
-dddddd
+Hello
+World
+42

@@ -10,5 +10,6 @@
 # endif
 
 char	*get_next_line(int fd);
-
+char *line(char **stash);
+int ft_strlen(char *s);
 #endif

@@ -17,7 +17,7 @@ static char *ft_strchar(char *s, char c)
         return (s);
     return 0;
 }
-static int ft_strlen(char *s)
+ int ft_strlen(char *s)
 {
     int i;
     i = 0;
@@ -60,12 +60,12 @@ static char *read_toshtash(char *stash, int fd)
     
     buffer = malloc(BUFFER_SIZE + 1);
     if (!buffer)
-        return (NULL);
+        return (free(stash), NULL);
     while (!ft_strchar(stash, '\n'))
     {
         byte_read = read(fd, buffer, BUFFER_SIZE);
         if (byte_read < 0)
-        return (free(buffer), free(stash), stash = NULL, NULL);
+            return (free(buffer), free(stash), NULL);
     if (byte_read == 0)
         break;
     buffer[byte_read] = '\0';
@@ -78,92 +78,16 @@ static char *read_toshtash(char *stash, int fd)
     free(buffer);
     return (stash);
 }
-char *ft_strlcopy(char *dst, char *src, int len)
-{
-    int i;
-    i = 0;
-    if (!dst || !src)
-        return NULL;
-    while (i < len)
-    {
-        dst[i] = src[i];
-        i++;
-    }
-    dst[i] = '\0';
-    return dst;
-}
-char *ft_strdup(char *stash)
-{
-    char *rest;
-    int i;
 
-    i = 0;
-    rest = malloc(ft_strlen(stash) + 1);
-    if (!rest)
-        return NULL;
-    while (stash[i])
-    {
-        rest[i] = stash[i];
-        i++;
-    }
-    rest[i] = '\0';
-    return rest;
-}
-void line_plus(char **stash, int i)
-{
-    char *tmp;
-    tmp = 0;
-    if ((*stash)[i])
-    {
-        tmp = ft_strdup(&(*stash)[i]);
-        if (!tmp)
-        {
-            free(*stash);
-            *stash = NULL;
-            return;
-        }
-        free(*stash);
-        *stash = tmp;
-    }else {
-        free(*stash);
-        *stash = NULL;
-    }
-}
-char *line(char **stash)
-{
-    char *line;
-    int i;
-    i = 0;
-    if (!*stash)
-        return (NULL);
-    while ((*stash)[i] && (*stash)[i] != '\n')
-        i++;
-    if ((*stash)[i] == '\n')
-        i++;
-    line = malloc(i + 1);
-    if (!line)
-    {
-        free(*stash);
-        stash = NULL;
-        return (NULL);
-    }
-    ft_strlcopy(line, *stash, i);
-    line_plus(stash, i);
-    return line;
-}
+
 
 char *get_next_line(int fd)
 {
     static char *stash;
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
     stash = read_toshtash(stash, fd);
     if (!stash)
         return (NULL);
     return (line(&stash));
-}
-int main()
-{
-    int fd = open("test.txt", O_RDONLY);
-    printf("%s", get_next_line(fd));
-    printf("%s", get_next_line(fd));
-    close(fd);
 }
