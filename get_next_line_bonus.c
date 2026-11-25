@@ -83,12 +83,12 @@ static char	*read_toshtash(char *stash, int fd)
 	return (stash);
 }
 
-char	*get_next_line(int fd)
+char	*get_next_line_bonus(int fd)
 {
 	static char	*stash[1024];
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
+	if (fd < 0 || fd > 1024|| BUFFER_SIZE <= 0)
+		return (free(stash[fd]), NULL);
 	stash[fd] = read_toshtash(stash[fd], fd);
 	if (!stash[fd])
 		return (NULL);
